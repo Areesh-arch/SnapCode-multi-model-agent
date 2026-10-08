@@ -1,7 +1,7 @@
 {
   "name": "snapcode",
-  "displayName": "SnapCode",
-  "description": "Convert UI screenshot ideas into frontend code using AI.",
+  "displayName": "SnapCode AI Agent",
+  "description": "A model-agnostic, multi-provider AI coding agent extension for VS Code.",
   "version": "0.0.1",
   "engines": {
     "vscode": "^1.140.0"
@@ -14,8 +14,8 @@
   "contributes": {
     "commands": [
       {
-        "command": "snapcode.helloWorld",
-        "title": "Hello World"
+        "command": "snapcode.openAgent",
+        "title": "SnapCode: Open AI Agent Panel"
       }
     ]
   },
