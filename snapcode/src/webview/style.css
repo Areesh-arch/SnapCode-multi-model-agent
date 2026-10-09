@@ -51,3 +51,13 @@ button {
 button:hover {
     background-color: var(--vscode-button-hoverBackground);
 }
+#outputArea {
+    margin-top: 10px;
+    padding: 10px;
+    background-color: var(--vscode-textBlockQuote-background);
+    border-left: 3px solid var(--vscode-textLink-foreground);
+    white-space: pre-wrap;
+    font-family: var(--vscode-editor-font-family, monospace);
+    font-size: 12px;
+    display: none;
+}

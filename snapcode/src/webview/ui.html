@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="{{styleUri}}">
     <title>SnapCode AI Agent</title>
+    <link rel="stylesheet" href="{{styleUri}}">
 </head>
 <body>
     <div class="container">
@@ -15,7 +15,7 @@
         <select id="modelSelect">
             <option value="deepseek">DeepSeek (DeepSeek-Chat)</option>
             <option value="claude">Anthropic Claude (3.5 Sonnet)</option>
-            <option value="openai">OpenAI (GPT-4o)</option>\
+            <option value="openai">OpenAI (GPT-4o)</option>
             <option value="gemini">Google Gemini (Gemini 2.5 Pro)</option>
         </select>
 
@@ -23,6 +23,8 @@
         <textarea id="promptInput" placeholder="e.g., Create a full-stack Express & React app structure with authentication..."></textarea>
 
         <button id="generateBtn">Generate Workspace Architecture</button>
+
+        <div id="outputArea"></div>
     </div>
 
     <script src="{{scriptUri}}"></script>
