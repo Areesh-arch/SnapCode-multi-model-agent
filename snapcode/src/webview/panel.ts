@@ -1,4 +1,5 @@
 import * as vscode from 'vscode';
+import { AIProvider } from '../provider';
 
 export class SnapCodePanel {
     public static currentPanel: SnapCodePanel | undefined;
@@ -13,12 +14,28 @@ export class SnapCodePanel {
         this._update();
 
         this._panel.webview.onDidReceiveMessage(
-            message => {
+            async message => {
                 switch (message.command) {
                     case 'generate':
-                        vscode.window.showInformationMessage(
-                            `[SnapCode] Model: ${message.provider} | Prompt: ${message.prompt}`
-                        );
+                        try {
+                            // Backend AIProvider call karke response lena
+                            const responseText = await AIProvider.generateCode(message.provider, message.prompt);
+                            
+                            // Success message ya output UI ko wapas bhejna
+                            vscode.window.showInformationMessage(`[SnapCode] Success from ${message.provider}!`);
+                            
+                            // Result ko webview par push karna
+                            this._panel.webview.postMessage({
+                                command: 'showResult',
+                                text: responseText
+                            });
+                        } catch (error: any) {
+                            vscode.window.showErrorMessage(`[SnapCode Error] ${error.message}`);
+                            this._panel.webview.postMessage({
+                                command: 'showError',
+                                text: error.message
+                            });
+                        }
                         return;
                 }
             },
@@ -128,6 +145,16 @@ export class SnapCodePanel {
                 button:hover {
                     background-color: var(--vscode-button-hoverBackground);
                 }
+                #outputArea {
+                    margin-top: 10px;
+                    padding: 10px;
+                    background-color: var(--vscode-textBlockQuote-background);
+                    border-left: 3px solid var(--vscode-textLink-foreground);
+                    white-space: pre-wrap;
+                    font-family: var(--vscode-editor-font-family, monospace);
+                    font-size: 12px;
+                    display: none;
+                }
             </style>
         </head>
         <body>
@@ -147,6 +174,8 @@ export class SnapCodePanel {
                 <textarea id="promptInput" placeholder="e.g., Create a full-stack Express & React app structure with authentication..."></textarea>
 
                 <button id="generateBtn">Generate Workspace Architecture</button>
+
+                <div id="outputArea"></div>
             </div>
 
             <script>
@@ -155,12 +184,32 @@ export class SnapCodePanel {
                 document.getElementById('generateBtn').addEventListener('click', () => {
                     const provider = document.getElementById('modelSelect').value;
                     const prompt = document.getElementById('promptInput').value;
+                    
+                    const btn = document.getElementById('generateBtn');
+                    btn.textContent = 'Generating...';
+                    btn.disabled = true;
 
                     vscode.postMessage({
                         command: 'generate',
                         provider: provider,
                         prompt: prompt
                     });
+                });
+
+                window.addEventListener('message', event => {
+                    const message = event.data;
+                    const outputArea = document.getElementById('outputArea');
+                    const btn = document.getElementById('generateBtn');
+                    
+                    btn.textContent = 'Generate Workspace Architecture';
+                    btn.disabled = false;
+                    outputArea.style.display = 'block';
+
+                    if (message.command === 'showResult') {
+                        outputArea.textContent = message.text;
+                    } else if (message.command === 'showError') {
+                        outputArea.textContent = 'Error: ' + message.text;
+                    }
                 });
             </script>
         </body>
